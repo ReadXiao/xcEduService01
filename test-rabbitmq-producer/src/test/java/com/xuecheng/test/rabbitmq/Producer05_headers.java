@@ -58,7 +58,7 @@ public class Producer05_headers {
              *   topic:  对应Topics工作模式
              *   headers:    对应headers工作模式
              * */
-            channel.exchangeDeclare(EXCHANGE_HEADERS_INFORM, BuiltinExchangeType.TOPIC);
+            channel.exchangeDeclare(EXCHANGE_HEADERS_INFORM, BuiltinExchangeType.HEADERS);
             //进行交换机和队列进行绑定
             //参数：String queue, String exchange, String routingKey
             /*
@@ -99,10 +99,10 @@ public class Producer05_headers {
             }*/
             for (int i = 0; i < 5; i++) {
                 //发送消息的时候需要指定routingkey
-                String message = "email inform to user" + i;
+                String message = "email and sms inform to user" + i;
                 Map<String, Object> headers = new Hashtable<String, Object>();
-                headers.put("inform_type", "email");//匹配email通知消费者绑定的header
-                // headers.put("inform_type", "sms");//匹配sms通知消费者绑定的header
+                headers.put("inform_email", "email");//匹配email通知消费者绑定的header
+                headers.put("inform_sms", "sms");//匹配sms通知消费者绑定的header
                 AMQP.BasicProperties.Builder properties = new AMQP.BasicProperties.Builder();
                 properties.headers(headers); //Email通知
                 channel.basicPublish(EXCHANGE_HEADERS_INFORM, "", properties.build(), message.getBytes());
