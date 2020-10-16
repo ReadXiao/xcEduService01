@@ -12,6 +12,7 @@
         <module>../xc-framework-utils</module>
         <module>../xc-service-api</module>
         <module>../xc-service-manage-cms</module>
+        <module>../xc-service-manage-course</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
