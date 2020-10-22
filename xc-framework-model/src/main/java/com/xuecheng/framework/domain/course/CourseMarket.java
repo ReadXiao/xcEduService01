@@ -2,6 +2,7 @@ package com.xuecheng.framework.domain.course;
 
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Data
 @ToString
 @Entity
+@DynamicUpdate
 @Table(name="course_market")
 @GenericGenerator(name = "jpa-assigned", strategy = "assigned")
 public class CourseMarket implements Serializable {

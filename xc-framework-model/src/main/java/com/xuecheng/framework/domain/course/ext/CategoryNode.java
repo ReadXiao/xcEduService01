@@ -11,8 +11,9 @@ import java.util.List;
  */
 @Data
 @ToString
-public class CategoryNode extends Category {
-
+public class CategoryNode{
+    String value;
+    String label;
     List<CategoryNode> children;
 
 }
