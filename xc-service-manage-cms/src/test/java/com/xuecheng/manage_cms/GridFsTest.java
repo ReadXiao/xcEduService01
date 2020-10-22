@@ -3,6 +3,8 @@ package com.xuecheng.manage_cms;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.xuecheng.framework.domain.cms.CmsPage;
+import com.xuecheng.manage_cms.dao.CmsPageRepository;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +37,9 @@ public class GridFsTest {
 
     @Autowired
     GridFSBucket gridFSBucket;
+
+    @Resource
+    CmsPageRepository cmsPageRepository;
 
     //存文件
     @Test
@@ -62,4 +68,10 @@ public class GridFsTest {
 
     }
 
+    @Test
+    public void findByPageName(){
+        String name = "index.html";
+        CmsPage byPageName = cmsPageRepository.findByPageName(name);
+        System.out.println(byPageName);
+    }
 }
