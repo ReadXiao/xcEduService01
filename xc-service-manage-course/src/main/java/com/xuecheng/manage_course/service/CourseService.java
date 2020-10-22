@@ -1,23 +1,36 @@
 package com.xuecheng.manage_course.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.CourseMarket;
 import com.xuecheng.framework.domain.course.CoursePic;
 import com.xuecheng.framework.domain.course.Teachplan;
+import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.ext.CourseView;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
+import com.xuecheng.framework.domain.course.request.CourseListRequest;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.QueryResponseResult;
+import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.NotNullBeanUtils;
 import com.xuecheng.manage_course.dao.*;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Administrator
@@ -40,6 +53,9 @@ public class CourseService {
 
     @Autowired
     CourseMarketRepository courseMarketRepository;
+
+    @Autowired
+    CourseMapper courseMapper;
 
     //课程计划查询
     public TeachplanNode findTeachplanList(String courseId){
@@ -176,8 +192,77 @@ public class CourseService {
         //课程计划信息
         TeachplanNode teachplanNode = teachplanMapper.selectList(id);
         courseView.setTeachplanNode(teachplanNode);
-
         return courseView;
+    }
 
+    //查询课程营销信息
+    public CourseMarket getCourseMarketById(String courseId) {
+        Optional<CourseMarket> byId = courseMarketRepository.findById(courseId);
+        CourseMarket courseMarket = byId.get();
+        return courseMarket;
+    }
+
+    //修改课程营销信息
+    public ResponseResult updateCourseMarket(String courseId,CourseMarket courseMarket) {
+        Optional<CourseMarket> byId = courseMarketRepository.findById(courseId);
+        if (byId.isPresent()){
+            CourseMarket courseMarket1 = byId.get();
+            BeanUtils.copyProperties(courseMarket,courseMarket1, NotNullBeanUtils.getNullPropertyNames(courseMarket));
+            courseMarketRepository.save(courseMarket1);
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        return new ResponseResult(CommonCode.FAIL);
+    }
+
+    //获得课程基础信息
+    public CourseBase getCourseBaseById(String courseId) throws RuntimeException {
+        Optional<CourseBase> byId = courseBaseRepository.findById(courseId);
+        CourseBase courseBase = byId.get();
+        return courseBase;
+    }
+
+    //修改课程基础信息
+    public ResponseResult updateCourseBase(String id,CourseBase courseBase) {
+        Optional<CourseBase> byId = courseBaseRepository.findById(id);
+        if (byId.isPresent()){
+            CourseBase courseBase1 = byId.get();
+            BeanUtils.copyProperties(courseBase,courseBase1,NotNullBeanUtils.getNullPropertyNames(courseBase));
+            courseBaseRepository.save(courseBase1);
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        return new ResponseResult(CommonCode.FAIL);
+    }
+
+    //分页查询课程列表
+    public QueryResponseResult<CourseInfo> findCourseList(int page, int size, CourseListRequest courseListRequest) {
+        if (courseListRequest == null){
+            courseListRequest = new CourseListRequest();
+        }
+        if (page<1){
+            page = 1;
+        }
+        if (size<1){
+            size = 10;
+        }
+        Page<CourseInfo> courseList = null;
+        PageHelper.startPage(page,size);
+        if (StringUtils.isEmpty(courseListRequest.getCompanyId())) {
+            courseList = courseMapper.findCourseList();
+        }else{
+            courseList = courseMapper.findCourseListByCompanyId(courseListRequest.getCompanyId());
+        }
+        QueryResult<CourseInfo> result = new QueryResult<>();
+        result.setList(courseList.getResult());
+        result.setTotal(courseList.getTotal());
+        return new QueryResponseResult<>(CommonCode.SUCCESS,result);
+    }
+
+    //添加课程
+    public ResponseResult addCourseBase(CourseBase courseBase) {
+        CourseBase save = courseBaseRepository.save(courseBase);
+        if (save!=null){
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        return new ResponseResult(CommonCode.FAIL);
     }
 }
