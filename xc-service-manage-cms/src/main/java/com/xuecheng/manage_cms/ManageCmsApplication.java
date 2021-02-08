@@ -1,10 +1,5 @@
 package com.xuecheng.manage_cms;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSBuckets;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
  * @version 1.0
  * @create 2018-09-12 17:13
  **/
-@EnableDiscoveryClient  //一个EurekaClient从EurekaServer发现服务
+@EnableDiscoveryClient //一个EurekaClient从EurekaServer发现服务
 @SpringBootApplication
 @EntityScan("com.xuecheng.framework.domain.cms")//扫描实体类
 @ComponentScan(basePackages={"com.xuecheng.api"})//扫描接口
@@ -34,16 +29,6 @@ public class ManageCmsApplication {
     public RestTemplate restTemplate(){
         return new RestTemplate(new OkHttp3ClientHttpRequestFactory());
     }
-
-    /*@Value("${spring.data.mongodb.database}")
-    String db;
-
-    @Bean
-    public GridFSBucket getGridFSBucket(MongoClient mongoClient){
-        MongoDatabase database = mongoClient.getDatabase(db);
-        GridFSBucket bucket = GridFSBuckets.create(database);
-        return bucket;
-    }*/
 
 }
 

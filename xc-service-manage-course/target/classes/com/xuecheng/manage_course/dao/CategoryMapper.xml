@@ -3,14 +3,14 @@
 <mapper namespace="com.xuecheng.manage_course.dao.CategoryMapper">
 
     <resultMap id="categoryMap" type="com.xuecheng.framework.domain.course.ext.CategoryNode">
-        <id column="one_id" property="value"></id>
-        <result column="one_name" property="label"></result>
+        <id column="one_id" property="id"></id>
+        <result column="one_name" property="name"></result>
         <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
-            <id column="two_id" property="value"></id>
-            <result column="two_name" property="label"></result>
+            <id column="two_id" property="id"></id>
+            <result column="two_name" property="name"></result>
             <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
-                <id column="three_id" property="value"></id>
-                <result column="three_name" property="label"></result>
+                <id column="three_id" property="id"></id>
+                <result column="three_name" property="name"></result>
             </collection>
         </collection>
 

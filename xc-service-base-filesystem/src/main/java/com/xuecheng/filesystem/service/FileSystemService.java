@@ -7,6 +7,7 @@ import com.xuecheng.framework.domain.filesystem.response.FileSystemCode;
 import com.xuecheng.framework.domain.filesystem.response.UploadFileResult;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.fastdfs.*;
 import org.slf4j.Logger;
