@@ -9,8 +9,11 @@ import com.xuecheng.framework.domain.course.request.CourseListRequest;
 import com.xuecheng.framework.domain.course.response.CoursePublishResult;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.framework.utils.XcOauth2Util;
+import com.xuecheng.framework.web.BaseController;
 import com.xuecheng.manage_course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -19,11 +22,12 @@ import org.springframework.web.bind.annotation.*;
  **/
 @RestController
 @RequestMapping("/course")
-public class CourseController implements CourseControllerApi {
+public class CourseController extends BaseController implements CourseControllerApi {
 
     @Autowired
     CourseService courseService;
 
+    @PreAuthorize("hasAuthority('course_teachplan_list')")//用户拥有course_teachplan_list权限的时候方可访问
     @Override
     @GetMapping("/teachplan/list/{courseId}")
     public TeachplanNode findTeachplanList(@PathVariable("courseId") String courseId) {
@@ -43,6 +47,7 @@ public class CourseController implements CourseControllerApi {
         return courseService.addCoursePic(courseId, pic);
     }
 
+    @PreAuthorize("hasAuthority('course_pic_list')")
     @Override
     @GetMapping("/coursepic/list/{courseId}")
     public CoursePic findCoursePic(@PathVariable("courseId") String courseId) {
@@ -82,7 +87,11 @@ public class CourseController implements CourseControllerApi {
     @GetMapping("/coursebase/list/{page}/{size}")
     @Override
     public QueryResponseResult<CourseInfo> findCourseList(@PathVariable("page") int page, @PathVariable("size") int size, CourseListRequest courseListRequest) {
-        return courseService.findCourseList(page, size, courseListRequest);
+
+        XcOauth2Util xcOauth2Util = new XcOauth2Util();
+        XcOauth2Util.UserJwt userJwt = xcOauth2Util.getUserJwtFromHeader(request);
+        String companyId = userJwt.getCompanyId();
+        return courseService.findCourseList(companyId,page, size, courseListRequest);
     }
 
     @PostMapping("/coursebase/add")

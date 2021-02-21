@@ -1,5 +1,6 @@
 package com.xuecheng.auth.service;
 
+import com.xuecheng.auth.client.UserClient;
 import com.xuecheng.framework.domain.ucenter.XcMenu;
 import com.xuecheng.framework.domain.ucenter.ext.XcUserExt;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     ClientDetailsService clientDetailsService;
+
+    @Resource
+    UserClient userClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,13 +46,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
-        XcUserExt userext = new XcUserExt();
-        userext.setUsername("itcast");
-        userext.setPassword(new BCryptPasswordEncoder().encode("123"));
-        userext.setPermissions(new ArrayList<XcMenu>());
-        if(userext == null){
+
+        //远程调用用户中心根据账户查询用户信息
+        XcUserExt userext = userClient.getUserext(username);
+        if (userext == null){
+            //返回空给springsecurity表示用户不存在
             return null;
         }
+        //userext.setUsername("itcast");
+        //userext.setPassword(new BCryptPasswordEncoder().encode("123"));
+        //userext.setPermissions(new ArrayList<XcMenu>());//权限暂时用静态的
         //取出正确密码（hash值）
         String password = userext.getPassword();
         //这里暂时使用静态密码
@@ -55,10 +63,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //用户权限，这里暂时使用静态数据，最终会从数据库读取
         //从数据库获取权限
         List<XcMenu> permissions = userext.getPermissions();
+        if (permissions == null){
+            permissions = new ArrayList<>();
+        }
         List<String> user_permission = new ArrayList<>();
         permissions.forEach(item-> user_permission.add(item.getCode()));
-//        user_permission.add("course_get_baseinfo");
-//        user_permission.add("course_find_pic");
+        //user_permission.add("course_get_baseinfo"); //图片查询
+        //user_permission.add("course_pic_list");     //查询课程信息
         String user_permission_string  = StringUtils.join(user_permission.toArray(), ",");
         UserJwt userDetails = new UserJwt(username,
                 password,

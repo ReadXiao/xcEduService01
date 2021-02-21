@@ -8,13 +8,13 @@
         where id = #{id}
     </select>
 
-    <select id="findCourseList" resultType="com.xuecheng.framework.domain.course.CourseBase">
+    <select id="findCourseList" resultType="com.xuecheng.framework.domain.course.ext.CourseInfo">
         select b.id as id, b.name as name, p.pic as pic
         from xc_course.course_base b
                  LEFT JOIN xc_course.course_pic p on b.id = p.courseid
     </select>
 
-    <select id="findCourseListByCompanyId" resultType="com.xuecheng.framework.domain.course.CourseBase">
+    <select id="findCourseListByCompanyId" resultType="com.xuecheng.framework.domain.course.ext.CourseInfo">
         select b.id as id, b.name as name, p.pic as pic
         from xc_course.course_base b,
              xc_course.course_pic p

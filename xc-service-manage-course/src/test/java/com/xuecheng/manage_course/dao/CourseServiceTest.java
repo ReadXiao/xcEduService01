@@ -62,8 +62,9 @@ public class CourseServiceTest {
     public void findCourseList(){
         int page = 1;
         int size = 5;
+        String courseId = "1";
         CourseListRequest courseListRequest = new CourseListRequest();
-        QueryResponseResult<CourseInfo> courseList = courseService.findCourseList(page, size, courseListRequest);
+        QueryResponseResult<CourseInfo> courseList = courseService.findCourseList(courseId,page, size, courseListRequest);
         System.out.println("==============================================================="+courseList);
     }
 }

@@ -39,7 +39,7 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     AuthenticationManager authenticationManager;
     @Autowired
     TokenStore tokenStore;
-    @Autowired
+    @Resource
     private CustomUserAuthenticationConverter customUserAuthenticationConverter;
 
     //读取密钥的配置

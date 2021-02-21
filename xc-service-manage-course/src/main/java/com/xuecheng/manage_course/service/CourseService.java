@@ -267,7 +267,7 @@ public class CourseService {
     }
 
     //分页查询课程列表
-    public QueryResponseResult<CourseInfo> findCourseList(int page, int size, CourseListRequest courseListRequest) {
+    public QueryResponseResult<CourseInfo> findCourseList(String companyId,int page, int size, CourseListRequest courseListRequest) {
         if (courseListRequest == null){
             courseListRequest = new CourseListRequest();
         }
@@ -279,10 +279,10 @@ public class CourseService {
         }
         Page<CourseInfo> courseList = null;
         PageHelper.startPage(page,size);
-        if (StringUtils.isEmpty(courseListRequest.getCompanyId())) {
+        if (StringUtils.isEmpty(companyId)) {
             courseList = courseMapper.findCourseList();
         }else{
-            courseList = courseMapper.findCourseListByCompanyId(courseListRequest.getCompanyId());
+            courseList = courseMapper.findCourseListByCompanyId(companyId);
         }
         QueryResult<CourseInfo> result = new QueryResult<>();
         result.setList(courseList.getResult());
