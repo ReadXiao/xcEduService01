@@ -43,7 +43,6 @@ public class ChooseCourseTask {
         calendar.set(GregorianCalendar.MINUTE,-1);
         Date time = calendar.getTime();
         List<XcTask> xcTaskList = taskService.findXcTaskList(time, 100);
-        System.out.println(xcTaskList);
         //调用service发布消息，将添加选课的任务发送给mq
         for(XcTask xcTask:xcTaskList){
             //取任务
@@ -83,6 +82,5 @@ public class ChooseCourseTask {
             e.printStackTrace();
         }
         LOGGER.info("===============测试定时任务2结束===============");
-
     }
 }
